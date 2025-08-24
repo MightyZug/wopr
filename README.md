@@ -124,26 +124,59 @@ except pygame.error:
 ## Installation and Running
 
 ### Prerequisites
-```bash
-pip install pygame
-```
+- Python 3.9 or higher
+
+### Setup Instructions
+
+1. **Clone the repository** (or download the files)
+   ```bash
+   git clone <your-repo-url>
+   cd wopr
+   ```
+
+2. **Create a virtual environment**
+   ```bash
+   python -m venv .venv
+   ```
+
+3. **Activate the virtual environment**
+   ```bash
+   # On macOS/Linux:
+   source .venv/bin/activate
+   
+   # On Windows:
+   .venv\Scripts\activate
+   ```
+
+4. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 ### File Structure
 ```
-/project/
-├── WarGames_refactored.py  # Main game file
-├── config.py               # Configuration constants
-├── city_data.py           # City data
-├── game_state.py          # State management
-├── ui.py                  # UI components
-├── missiles.py            # Missile system
+/wopr/
+├── WarGames.py           # Main game file
+├── config.py             # Configuration constants
+├── city_data.py          # City data
+├── game_state.py         # State management
+├── ui.py                 # UI components
+├── missiles.py           # Missile system
 ├── neon_map.png          # Background image (optional)
+├── requirements.txt      # Python dependencies
 └── README.md             # This file
 ```
 
 ### Running the Game
 ```bash
-python WarGames_refactored.py
+# Make sure your virtual environment is activated
+python WarGames.py
+```
+
+### Deactivating the Virtual Environment
+When you're done playing:
+```bash
+deactivate
 ```
 
 ## Code Quality Improvements
