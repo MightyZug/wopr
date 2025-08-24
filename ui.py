@@ -5,7 +5,7 @@ import math
 from typing import Set, List
 from config import (COLORS, WINDOW_WIDTH, WINDOW_HEIGHT, CITY_RADIUS, 
                    SELECTED_COLOR, TARGETED_COLOR, DEFENDED_COLOR, HIT_COLOR, GAME_TITLE)
-from city_data import USA_CITIES, RUSSIA_CITIES
+from city_data import USA_CITIES, USSR_CITIES
 
 
 class Button:
@@ -65,7 +65,7 @@ class CityRenderer:
         elif is_targeted:
             return TARGETED_COLOR
         else:
-            # Default city colors: blue for US, red for Russia
+            # Default city colors: blue for US, red for USSR
             return COLORS["blue"] if is_us_city else COLORS["red"]
     
     def draw_city(self, screen: pygame.Surface, city: dict, color: tuple, 
@@ -83,7 +83,7 @@ class CityRenderer:
         else:
             # The `color` parameter from _get_city_color determines the dot color
             pygame.draw.circle(screen, color, (x, y), size)
-            # Text color is always original (blue for US, red for Russia) unless destroyed
+            # Text color is always original (blue for US, red for USSR) unless destroyed
             text_color = COLORS["blue"] if is_us_city else COLORS["red"]
 
         text_surface = self.font.render(city["name"], True, text_color)
@@ -105,10 +105,10 @@ class CityRenderer:
                                        is_selected, is_targeted, is_us_city=True)
             self.draw_city(screen, city, color, is_destroyed, is_defended, is_selected, is_us_city=True)
     
-    def draw_russia_cities(self, screen: pygame.Surface, destroyed: List[bool], 
+    def draw_ussr_cities(self, screen: pygame.Surface, destroyed: List[bool], 
                           defenses: Set[int], selected_targets: Set[int]):
-        """Draw all Russian cities with their current states."""
-        for idx, city in enumerate(RUSSIA_CITIES):
+        """Draw all USSR cities with their current states."""
+        for idx, city in enumerate(USSR_CITIES):
             is_defended = idx in defenses
             is_selected = idx in selected_targets
             is_destroyed = destroyed[idx]
@@ -135,7 +135,7 @@ class UI:
             "GLOBAL THERMONUCLEAR WAR - HELP",
             "",
             "GAME OVERVIEW:",
-            "Select US cities to defend and Russian cities to attack",
+            "Select US cities to defend and USSR cities to attack",
             "AI will simultaneously choose targets and defenses",
             "",
             "CONTROLS:",
@@ -145,13 +145,13 @@ class UI:
             "",
             "GAME PHASES:",
             "1. DEFENSIVE - Select 5 US cities to defend",
-            "2. OFFENSIVE - Select 5 Russian cities to target", 
+            "2. OFFENSIVE - Select 5 USSR cities to target", 
             "3. LAUNCH - Watch missiles fly and intercepts",
             "4. RESULTS - View battle outcome",
             "",
             "CITY COLORS:",
             "Blue circles = US Cities",
-            "Red circles = Russian Cities",
+            "Red circles = USSR Cities",
             "Orange circles = Selected cities",
             "Green circles = Defended cities",
             "Purple crosses = Destroyed cities",
@@ -244,16 +244,16 @@ class UI:
         self.draw_windowed_text(screen, [counter_text], y_pos)
     
     def draw_results(self, screen: pygame.Surface, us_casualties: int, 
-                    russia_casualties: int, total_us: int, total_russia: int,
-                    us_percent: float, russia_percent: float,
-                    us_destroyed_cities: List[str], russian_destroyed_cities: List[str]):
+                    ussr_casualties: int, total_us: int, total_ussr: int,
+                    us_percent: float, ussr_percent: float,
+                    us_destroyed_cities: List[str], ussr_destroyed_cities: List[str]):
         """Draw battle results in a windowed panel."""
         # Create text lines for the results window
         text_lines = [
             "BATTLE RESULTS",
             "",
             f"US Casualties: {us_casualties:,} / {total_us:,} ({us_percent:.1f}%)",
-            f"Russian Casualties: {russia_casualties:,} / {total_russia:,} ({russia_percent:.1f}%)",
+            f"USSR Casualties: {ussr_casualties:,} / {total_ussr:,} ({ussr_percent:.1f}%)",
         ]
         
         if us_destroyed_cities:
@@ -283,16 +283,16 @@ class UI:
             else:
                 text_lines.append("US Cities Destroyed: " + us_cities_text)
         
-        if russian_destroyed_cities:
+        if ussr_destroyed_cities:
             text_lines.append("")
-            # Split Russian cities across multiple lines if needed
-            russia_cities_text = ", ".join(russian_destroyed_cities)
-            if len(russia_cities_text) > 50:
+            # Split USSR cities across multiple lines if needed
+            ussr_cities_text = ", ".join(ussr_destroyed_cities)
+            if len(ussr_cities_text) > 50:
                 # Split into multiple lines
                 cities_per_line = []
-                current_line = "Russian Cities Destroyed: "
+                current_line = "USSR Cities Destroyed: "
                 
-                for i, city in enumerate(russian_destroyed_cities):
+                for i, city in enumerate(ussr_destroyed_cities):
                     if i == 0:
                         current_line += city
                     else:
@@ -308,7 +308,7 @@ class UI:
                 
                 text_lines.extend(cities_per_line)
             else:
-                text_lines.append("Russian Cities Destroyed: " + russia_cities_text)
+                text_lines.append("USSR Cities Destroyed: " + ussr_cities_text)
         
         self.draw_windowed_text(screen, text_lines)
 

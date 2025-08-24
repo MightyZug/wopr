@@ -13,7 +13,7 @@ USA_CITIES = [
     {"name": "Las Vegas", "x": 195, "y": 232, "population": 1000000},
 ]
 
-RUSSIA_CITIES = [
+USSR_CITIES = [
     {"name": "Moscow", "x": 750, "y": 143, "population": 8700000},
     {"name": "Leningrad", "x": 731, "y": 128, "population": 4600000},
     {"name": "Kiev", "x": 751, "y": 173, "population": 2500000},

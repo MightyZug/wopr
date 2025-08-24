@@ -8,7 +8,7 @@ import sys
 
 # Import our modules
 from config import COLORS, WINDOW_WIDTH, WINDOW_HEIGHT, GameState, DEFENSE_LIMIT, TARGET_LIMIT, GAME_TITLE
-from city_data import USA_CITIES, RUSSIA_CITIES
+from city_data import USA_CITIES, USSR_CITIES
 from game_state import GameStateManager
 from ui import UI, get_clicked_city
 from missiles import MissileSystem
@@ -88,7 +88,7 @@ class WarGame:
         
         elif self.game_state.current_state == GameState.OFFENSIVE:
             # Check for city clicks
-            city_idx = get_clicked_city(mouse_pos, RUSSIA_CITIES)
+            city_idx = get_clicked_city(mouse_pos, USSR_CITIES)
             if city_idx != -1:
                 self.game_state.toggle_target(city_idx)
             
@@ -140,9 +140,9 @@ class WarGame:
             self.missile_system.create_explosions(
                 intercepted,
                 self.game_state.usa_destroyed,
-                self.game_state.russia_destroyed,
+                self.game_state.ussr_destroyed,
                 self.game_state.us_cities_destroyed,
-                self.game_state.russian_cities_destroyed
+                self.game_state.ussr_cities_destroyed
             )
             
             # Update mushroom clouds
@@ -246,7 +246,7 @@ class WarGame:
         instruction_lines = [
             "OFFENSIVE PHASE",
             "",
-            "Click on Russian cities to target",
+            "Click on USSR cities to target",
             f"Targets Selected: {len(self.game_state.player_targets)}/{TARGET_LIMIT}"
         ]
         
@@ -259,9 +259,9 @@ class WarGame:
         self.ui.reset_button.draw(self.screen)
         
         # Draw cities
-        self.ui.city_renderer.draw_russia_cities(
+        self.ui.city_renderer.draw_ussr_cities(
             self.screen,
-            self.game_state.russia_destroyed,
+            self.game_state.ussr_destroyed,
             set(),  # Don't show AI defenses initially - let cities start as default red
             self.game_state.player_targets
         )
@@ -309,9 +309,9 @@ class WarGame:
             set()
         )
         
-        self.ui.city_renderer.draw_russia_cities(
+        self.ui.city_renderer.draw_ussr_cities(
             self.screen,
-            self.game_state.russia_destroyed,
+            self.game_state.ussr_destroyed,
             self.game_state.ai_defenses,  # Show AI defenses during missile launch
             set()
         )
@@ -334,9 +334,9 @@ class WarGame:
             set()
         )
         
-        self.ui.city_renderer.draw_russia_cities(
+        self.ui.city_renderer.draw_ussr_cities(
             self.screen,
-            self.game_state.russia_destroyed,
+            self.game_state.ussr_destroyed,
             self.game_state.ai_defenses,  # Show AI defenses in results
             set()
         )
@@ -351,7 +351,7 @@ class WarGame:
             casualties[0], casualties[1], casualties[2], casualties[3],
             casualties[4], casualties[5],
             self.game_state.us_cities_destroyed,
-            self.game_state.russian_cities_destroyed
+            self.game_state.ussr_cities_destroyed
         )
         
         # Show help prompt

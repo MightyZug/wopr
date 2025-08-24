@@ -6,7 +6,7 @@ import random
 from typing import List, Dict, Set, Any
 from config import (COLORS, MissileType, MISSILE_SPEED, INTERCEPT_RADIUS, 
                    MUSHROOM_CLOUD_DURATION, EXPLOSION_RADIUS)
-from city_data import USA_CITIES, RUSSIA_CITIES
+from city_data import USA_CITIES, USSR_CITIES
 
 
 class MissileSystem:
@@ -27,14 +27,14 @@ class MissileSystem:
         self.current_player_defenses = player_defenses
         self.current_ai_defenses = ai_defenses
         
-        # Player missiles from defended US cities to Russian targets
+        # Player missiles from defended US cities to USSR targets
         defense_list = list(player_defenses)
         target_list = list(player_targets)
         for i, target_idx in enumerate(target_list):
             if i < len(defense_list):  # Make sure we have a defending city
                 launch_city_idx = defense_list[i]
                 launch_pos = (USA_CITIES[launch_city_idx]["x"], USA_CITIES[launch_city_idx]["y"])
-                target_pos = (RUSSIA_CITIES[target_idx]["x"], RUSSIA_CITIES[target_idx]["y"])
+                target_pos = (USSR_CITIES[target_idx]["x"], USSR_CITIES[target_idx]["y"])
                 self.missile_lines.append({
                     "start": launch_pos,
                     "end": target_pos,
@@ -43,18 +43,18 @@ class MissileSystem:
                     "impact_applied": False,
                     "type": "attack",
                     "target_idx": target_idx,
-                    "is_russian_target": True,
+                    "is_ussr_target": True,
                     "intercept_launched": False,
                     "intercepted": False
                 })
         
-        # AI missiles from Russian cities to US targets (use AI defended cities as launch points)
+        # AI missiles from USSR cities to US targets (use AI defended cities as launch points)
         ai_defense_list = list(ai_defenses)
         ai_target_list = list(ai_targets)
         for i, target_idx in enumerate(ai_target_list):
             if i < len(ai_defense_list):  # Make sure we have a defending city
                 launch_city_idx = ai_defense_list[i]
-                launch_pos = (RUSSIA_CITIES[launch_city_idx]["x"], RUSSIA_CITIES[launch_city_idx]["y"])
+                launch_pos = (USSR_CITIES[launch_city_idx]["x"], USSR_CITIES[launch_city_idx]["y"])
                 target_pos = (USA_CITIES[target_idx]["x"], USA_CITIES[target_idx]["y"])
                 self.missile_lines.append({
                     "start": launch_pos,
@@ -64,7 +64,7 @@ class MissileSystem:
                     "impact_applied": False,
                     "type": "attack",
                     "target_idx": target_idx,
-                    "is_russian_target": False,
+                    "is_ussr_target": False,
                     "intercept_launched": False,
                     "intercepted": False
                 })
@@ -86,7 +86,7 @@ class MissileSystem:
                         target_idx = missile["target_idx"]
                         
                         # Check if this target is defended
-                        if not missile["is_russian_target"] and target_idx in self.current_player_defenses:
+                        if not missile["is_ussr_target"] and target_idx in self.current_player_defenses:
                             # US city is defended, launch intercept missile
                             defending_city_pos = (USA_CITIES[target_idx]["x"], USA_CITIES[target_idx]["y"])
                             # Calculate intercept point (50% along attacking missile path)
@@ -106,9 +106,9 @@ class MissileSystem:
                             })
                             missile["intercept_launched"] = True
                         
-                        elif missile["is_russian_target"] and target_idx in self.current_ai_defenses:
-                            # Russian city is defended, launch intercept missile
-                            defending_city_pos = (RUSSIA_CITIES[target_idx]["x"], RUSSIA_CITIES[target_idx]["y"])
+                        elif missile["is_ussr_target"] and target_idx in self.current_ai_defenses:
+                            # USSR city is defended, launch intercept missile
+                            defending_city_pos = (USSR_CITIES[target_idx]["x"], USSR_CITIES[target_idx]["y"])
                             # Calculate intercept point (50% along attacking missile path)
                             start_x, start_y = missile["start"]
                             end_x, end_y = missile["end"]
@@ -180,8 +180,8 @@ class MissileSystem:
         return intercepted
     
     def create_explosions(self, intercepted_missiles: Set[int], 
-                         usa_destroyed: List[bool], russia_destroyed: List[bool],
-                         us_destroyed_cities: List[str], russian_destroyed_cities: List[str]):
+                         usa_destroyed: List[bool], ussr_destroyed: List[bool],
+                         us_destroyed_cities: List[str], ussr_destroyed_cities: List[str]):
         """Create mushroom cloud explosions for missiles that hit their targets like the original."""
         current_time = pygame.time.get_ticks()
         
@@ -199,7 +199,7 @@ class MissileSystem:
                 current_x = start_x + (end_x - start_x) * missile["progress"]
                 current_y = start_y + (end_y - start_y) * missile["progress"]
                 
-                if not missile["is_russian_target"]:  # Hitting US city
+                if not missile["is_ussr_target"]:  # Hitting US city
                     if not usa_destroyed[target_idx]:
                         usa_destroyed[target_idx] = True
                         us_destroyed_cities.append(USA_CITIES[target_idx]["name"])
@@ -211,10 +211,10 @@ class MissileSystem:
                             "duration": MUSHROOM_CLOUD_DURATION
                         })
                 
-                else:  # Hitting Russian city
-                    if not russia_destroyed[target_idx]:
-                        russia_destroyed[target_idx] = True
-                        russian_destroyed_cities.append(RUSSIA_CITIES[target_idx]["name"])
+                else:  # Hitting USSR city
+                    if not ussr_destroyed[target_idx]:
+                        ussr_destroyed[target_idx] = True
+                        ussr_destroyed_cities.append(USSR_CITIES[target_idx]["name"])
                         
                         # Add explosion
                         self.mushroom_clouds.append({

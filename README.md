@@ -15,7 +15,7 @@ The codebase has been created as a modular architecture with clear separation of
 
 #### `city_data.py`
 - **Purpose**: Static data for cities
-- **Contents**: USA_CITIES and RUSSIA_CITIES with coordinates and population data
+- **Contents**: USA_CITIES and USSR_CITIES with coordinates and population data
 - **Benefits**: Separates data from logic, easy to modify city information
 
 #### `game_state.py`
@@ -107,7 +107,7 @@ except pygame.error:
 
 ### Strategic Gameplay
 - **Defensive Phase**: Select 5 US cities to defend with missile intercept systems
-- **Offensive Phase**: Select 5 Russian cities to target with nuclear missiles
+- **Offensive Phase**: Select 5 USSR cities to target with nuclear missiles
 - **AI Opponent**: Computer selects its own defenses and targets
 
 ### Visual Effects

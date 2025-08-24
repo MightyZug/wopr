@@ -48,4 +48,4 @@ class GameState(Enum):
 
 class MissileType(Enum):
     US_MISSILE = 1
-    RUSSIAN_MISSILE = 2
+    USSR_MISSILE = 2
