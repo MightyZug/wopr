@@ -40,10 +40,11 @@ DEFENDED_COLOR = COLORS["orange"]
 HIT_COLOR = COLORS["purple"]
 
 class GameState(Enum):
+    LOADING = 0
     MENU = 1
     DEFENSIVE = 2
     OFFENSIVE = 3
-    MISSILE_LAUNCH = 4
+    LAUNCHING = 4
     RESULTS = 5
 
 class MissileType(Enum):

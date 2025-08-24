@@ -10,7 +10,7 @@ class GameStateManager:
     """Manages the current state of the game and all game data."""
     
     def __init__(self):
-        self.current_state = GameState.MENU
+        self.current_state = GameState.LOADING
         self.player_defenses: Set[int] = set()
         self.player_targets: Set[int] = set()
         self.ai_defenses: Set[int] = set()

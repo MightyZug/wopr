@@ -12,6 +12,7 @@ from city_data import USA_CITIES, USSR_CITIES
 from game_state import GameStateManager
 from ui import UI, get_clicked_city
 from missiles import MissileSystem
+from loading_screen import LoadingScreen
 
 # Initialize Pygame
 pygame.init()
@@ -30,6 +31,7 @@ class WarGame:
         self.game_state = GameStateManager()
         self.ui = UI()
         self.missile_system = MissileSystem()
+        self.loading_screen = LoadingScreen()
         
         # Load background image
         try:
@@ -52,7 +54,12 @@ class WarGame:
                 self.running = False
             
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_g:
+                # Handle loading screen input
+                if self.game_state.current_state == GameState.LOADING:
+                    result = self.loading_screen.handle_keypress(event.key, event.unicode)
+                    if result == "start_game":
+                        self.game_state.current_state = GameState.MENU
+                elif event.key == pygame.K_g:
                     self.game_state.toggle_grid()
                 elif event.key == pygame.K_h:
                     self.game_state.toggle_help()
@@ -63,6 +70,10 @@ class WarGame:
     
     def _handle_mouse_click(self, mouse_pos: tuple):
         """Handle mouse click events based on current game state."""
+        # No mouse handling during loading screen
+        if self.game_state.current_state == GameState.LOADING:
+            return
+            
         # Check for reset button click (available in all states except menu)
         if (self.game_state.current_state != GameState.MENU and 
             self.ui.reset_button.is_clicked(mouse_pos)):
@@ -106,7 +117,7 @@ class WarGame:
         # Make AI selections at launch time
         self.game_state.make_ai_selections()
         
-        self.game_state.current_state = GameState.MISSILE_LAUNCH
+        self.game_state.current_state = GameState.LAUNCHING
         self.missile_system.create_missile_lines(
             self.game_state.player_targets, 
             self.game_state.ai_targets,
@@ -120,7 +131,11 @@ class WarGame:
         dt = (current_time - self.last_time) / 1000.0  # Delta time in seconds
         self.last_time = current_time
         
-        if self.game_state.current_state == GameState.MISSILE_LAUNCH:
+        if self.game_state.current_state == GameState.LOADING:
+            # Update loading screen animation
+            self.loading_screen.update(dt)
+            
+        elif self.game_state.current_state == GameState.LAUNCHING:
             # Update missile animations
             animation_complete = self.missile_system.update_missiles(dt)
             
@@ -158,7 +173,13 @@ class WarGame:
     
     def render(self):
         """Render the current game state."""
-        # Draw background
+        # Special handling for loading screen - no background
+        if self.game_state.current_state == GameState.LOADING:
+            self.loading_screen.draw(self.screen)
+            pygame.display.flip()
+            return
+            
+        # Draw background for all other states
         self.screen.blit(self.background, (0, 0))
         
         # Draw grid if enabled
@@ -175,7 +196,7 @@ class WarGame:
         elif self.game_state.current_state == GameState.OFFENSIVE:
             self._render_offensive_phase()
         
-        elif self.game_state.current_state == GameState.MISSILE_LAUNCH:
+        elif self.game_state.current_state == GameState.LAUNCHING:
             self._render_missile_launch()
         
         elif self.game_state.current_state == GameState.RESULTS:
