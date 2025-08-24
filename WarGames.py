@@ -5,7 +5,7 @@ WarGames Nuclear War Simulation Game
 import pygame
 import sys
 
-from config import COLOURS, WINDOW_WIDTH, WINDOW_HEIGHT, GameState, DEFENSE_LIMIT, TARGET_LIMIT, GAME_TITLE
+from config import WINDOW_WIDTH, WINDOW_HEIGHT, GameState, DEFENSE_LIMIT, TARGET_LIMIT, GAME_TITLE
 from city_data import USA_CITIES, USSR_CITIES
 from game_state import GameStateManager
 from ui import UI, get_clicked_city
@@ -33,8 +33,8 @@ class WarGame:
         except pygame.error:
             self.background = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
             for y in range(WINDOW_HEIGHT):
-                color_value = int(20 + (y / WINDOW_HEIGHT) * 40)
-                pygame.draw.line(self.background, (0, 0, color_value), (0, y), (WINDOW_WIDTH, y))
+                colour_value = int(20 + (y / WINDOW_HEIGHT) * 40)
+                pygame.draw.line(self.background, (0, 0, colour_value), (0, y), (WINDOW_WIDTH, y))
         
         self.running = True
         self.last_time = pygame.time.get_ticks()

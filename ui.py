@@ -2,34 +2,34 @@ import pygame
 import math
 from typing import Set, List
 from config import (COLOURS, WINDOW_WIDTH, WINDOW_HEIGHT, CITY_RADIUS, 
-                   SELECTED_COLOUR, TARGETED_COLOR, DEFENDED_COLOR, HIT_COLOR, GAME_TITLE)
+                   SELECTED_COLOUR, TARGETED_COLOUR, DEFENDED_COLOUR, HIT_COLOUR, GAME_TITLE)
 from city_data import USA_CITIES, USSR_CITIES
 
 
 class Button:
     
     def __init__(self, x: int, y: int, width: int, height: int, text: str, 
-                 color: tuple = COLOURS["green"], text_color: tuple = COLOURS["green"]):
+                 colour: tuple = COLOURS["green"], text_colour: tuple = COLOURS["green"]):
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
-        self.color = color
-        self.text_color = text_color
+        self.colour = colour
+        self.text_colour = text_colour
         self.font = pygame.font.Font(None, 24)
         self.enabled = True
     
     def draw(self, screen: pygame.Surface) -> None:
         mouse = pygame.mouse.get_pos()
-        hover = self.rect.collidepoint(mouse)
+        # hover = self.rect.collidepoint(mouse)
         
-        color = COLOURS["green"] if self.enabled else (60, 60, 60)
+        colour = COLOURS["green"] if self.enabled else (60, 60, 60)
         
-        pygame.draw.rect(screen, color, self.rect, border_radius=6)
+        pygame.draw.rect(screen, colour, self.rect, border_radius=6)
         
         inner_rect = self.rect.inflate(-6, -6)
         pygame.draw.rect(screen, COLOURS["black"], inner_rect, border_radius=6)
         
-        text_color = COLOURS["green"] if self.enabled else (100, 100, 100)
-        text_surface = self.font.render(self.text, True, text_color)
+        text_colour = COLOURS["green"] if self.enabled else (100, 100, 100)
+        text_surface = self.font.render(self.text, True, text_colour)
         text_rect = text_surface.get_rect(center=self.rect.center)
         screen.blit(text_surface, text_rect)
     
@@ -42,20 +42,20 @@ class CityRenderer:
     def __init__(self):
         self.font = pygame.font.Font(None, 18)
     
-    def _get_city_color(self, is_destroyed: bool, is_defended: bool, 
+    def _get_city_colour(self, is_destroyed: bool, is_defended: bool, 
                        is_selected: bool, is_targeted: bool, is_us_city: bool = True) -> tuple:
         if is_destroyed:
-            return HIT_COLOR
+            return HIT_COLOUR
         elif is_selected:
             return SELECTED_COLOUR
         elif is_defended:
-            return DEFENDED_COLOR
+            return DEFENDED_COLOUR
         elif is_targeted:
-            return TARGETED_COLOR
+            return TARGETED_COLOUR
         else:
             return COLOURS["blue"] if is_us_city else COLOURS["red"]
     
-    def draw_city(self, screen: pygame.Surface, city: dict, color: tuple, 
+    def draw_city(self, screen: pygame.Surface, city: dict, colour: tuple, 
                   is_destroyed: bool = False, is_defended: bool = False, 
                   is_selected: bool = False, is_us_city: bool = True):
         x, y = city["x"], city["y"]
@@ -64,12 +64,12 @@ class CityRenderer:
         if is_destroyed:
             pygame.draw.line(screen, COLOURS["black"], (x-size, y-size), (x+size, y+size), 3)
             pygame.draw.line(screen, COLOURS["black"], (x-size, y+size), (x+size, y-size), 3)
-            text_color = HIT_COLOR
+            text_colour = HIT_COLOUR
         else:
-            pygame.draw.circle(screen, color, (x, y), size)
-            text_color = COLOURS["blue"] if is_us_city else COLOURS["red"]
+            pygame.draw.circle(screen, colour, (x, y), size)
+            text_colour = COLOURS["blue"] if is_us_city else COLOURS["red"]
 
-        text_surface = self.font.render(city["name"], True, text_color)
+        text_surface = self.font.render(city["name"], True, text_colour)
         text_x = x + 12  
         text_y = y - text_surface.get_height() // 2
         screen.blit(text_surface, (text_x, text_y))
@@ -83,9 +83,9 @@ class CityRenderer:
             is_targeted = idx in targets
             is_destroyed = destroyed[idx]
             
-            color = self._get_city_color(is_destroyed, is_defended, 
+            colour = self._get_city_colour(is_destroyed, is_defended, 
                                        is_selected, is_targeted, is_us_city=True)
-            self.draw_city(screen, city, color, is_destroyed, is_defended, is_selected, is_us_city=True)
+            self.draw_city(screen, city, colour, is_destroyed, is_defended, is_selected, is_us_city=True)
     
     def draw_ussr_cities(self, screen: pygame.Surface, destroyed: List[bool], 
                           defenses: Set[int], selected_targets: Set[int]):
@@ -94,9 +94,9 @@ class CityRenderer:
             is_selected = idx in selected_targets
             is_destroyed = destroyed[idx]
             
-            color = self._get_city_color(is_destroyed, is_defended, 
+            colour = self._get_city_colour(is_destroyed, is_defended, 
                                        is_selected, False, is_us_city=False)
-            self.draw_city(screen, city, color, is_destroyed, is_defended, is_selected, is_us_city=False)
+            self.draw_city(screen, city, colour, is_destroyed, is_defended, is_selected, is_us_city=False)
 
 
 class UI:
@@ -127,7 +127,7 @@ class UI:
             "3. LAUNCH - Watch missiles fly and intercepts",
             "4. RESULTS - View battle outcome",
             "",
-            "CITY COLORS:",
+            "CITY COLOURS:",
             "Blue circles = US Cities",
             "Red circles = USSR Cities",
             "Orange circles = Selected cities",

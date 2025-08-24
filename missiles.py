@@ -1,7 +1,11 @@
 import pygame
 from typing import List, Dict, Set, Any
-from config import (COLOURS, INTERCEPT_RADIUS, 
-                   MUSHROOM_CLOUD_DURATION, EXPLOSION_RADIUS)
+from config import (
+    COLOURS, 
+    INTERCEPT_RADIUS, 
+    MUSHROOM_CLOUD_DURATION, 
+    EXPLOSION_RADIUS
+)
 from city_data import USA_CITIES, USSR_CITIES
 
 
@@ -30,7 +34,7 @@ class MissileSystem:
                 self.missile_lines.append({
                     "start": launch_pos,
                     "end": target_pos,
-                    "color": (255, 255, 0),  
+                    "colour": (255, 255, 0),  
                     "progress": 0.0,
                     "impact_applied": False,
                     "type": "attack",
@@ -50,7 +54,7 @@ class MissileSystem:
                 self.missile_lines.append({
                     "start": launch_pos,
                     "end": target_pos,
-                    "color": (255, 100, 100),  
+                    "colour": (255, 100, 100),  
                     "progress": 0.0,
                     "impact_applied": False,
                     "type": "attack",
@@ -86,7 +90,7 @@ class MissileSystem:
                             self.missile_lines.append({
                                 "start": defending_city_pos,
                                 "end": (intercept_x, intercept_y),
-                                "color": (0, 255, 0), 
+                                "colour": (0, 255, 0), 
                                 "progress": 0.0,
                                 "type": "intercept",
                                 "target_missile": missile,
@@ -104,7 +108,7 @@ class MissileSystem:
                             self.missile_lines.append({
                                 "start": defending_city_pos,
                                 "end": (intercept_x, intercept_y),
-                                "color": (0, 255, 0),  
+                                "colour": (0, 255, 0),  
                                 "progress": 0.0,
                                 "type": "intercept",
                                 "target_missile": missile,
@@ -209,9 +213,9 @@ class MissileSystem:
                 current_x = start_x + (end_x - start_x) * missile["progress"]
                 current_y = start_y + (end_y - start_y) * missile["progress"]
                 
-                pygame.draw.line(screen, missile["color"], missile["start"], (current_x, current_y), 2)
+                pygame.draw.line(screen, missile["colour"], missile["start"], (current_x, current_y), 2)
                 
-                pygame.draw.circle(screen, missile["color"], (int(current_x), int(current_y)), 3)
+                pygame.draw.circle(screen, missile["colour"], (int(current_x), int(current_y)), 3)
     
     def draw_mushroom_clouds(self, screen: pygame.Surface) -> None:
         current_time = pygame.time.get_ticks()

@@ -1,14 +1,14 @@
 import pygame
-from typing import List, Optional
-from config import COLOURS, WINDOW_WIDTH, WINDOW_HEIGHT
+from typing import Optional
+from config import WINDOW_WIDTH, WINDOW_HEIGHT
 
 
 class LoadingScreen:
     def __init__(self):
         self.font = pygame.font.Font(None, 24)
         self.small_font = pygame.font.Font(None, 20)
-        self.background_color = (0, 0, 0)  
-        self.text_color = (0, 255, 0)  
+        self.background_colour = (0, 0, 0)  
+        self.text_colour = (0, 255, 0)  
         
         self.games = [
             "CHESS",
@@ -90,17 +90,17 @@ class LoadingScreen:
         return None
     
     def draw(self, screen: pygame.Surface):
-        screen.fill(self.background_color)
+        screen.fill(self.background_colour)
         
         title = "W.O.P.R."
-        title_surface = self.font.render(title, True, self.text_color)
+        title_surface = self.font.render(title, True, self.text_colour)
         screen.blit(title_surface, (50, 30))
         
         subtitle = "WAR OPERATION PLAN RESPONSE"
-        subtitle_surface = self.small_font.render(subtitle, True, self.text_color)
+        subtitle_surface = self.small_font.render(subtitle, True, self.text_colour)
         screen.blit(subtitle_surface, (50, 60))
         
-        pygame.draw.line(screen, self.text_color, (50, 90), (WINDOW_WIDTH - 50, 90), 1)
+        pygame.draw.line(screen, self.text_colour, (50, 90), (WINDOW_WIDTH - 50, 90), 1)
         
         y_pos = 120
         for i in range(min(self.current_line + 1, len(self.games))):
@@ -111,22 +111,22 @@ class LoadingScreen:
                 displayed_text = game
                 
             if displayed_text:
-                game_surface = self.font.render(displayed_text, True, self.text_color)
+                game_surface = self.font.render(displayed_text, True, self.text_colour)
                 screen.blit(game_surface, (80, y_pos))
             y_pos += 30
         
         if self.show_input:
             input_y = y_pos + 30
-            prompt_surface = self.font.render(self.input_prompt, True, self.text_color)
+            prompt_surface = self.font.render(self.input_prompt, True, self.text_colour)
             screen.blit(prompt_surface, (50, input_y))
             
-            input_surface = self.font.render(self.user_input, True, self.text_color)
+            input_surface = self.font.render(self.user_input, True, self.text_colour)
             screen.blit(input_surface, (50 + prompt_surface.get_width(), input_y))
             
             if pygame.time.get_ticks() % 1000 < 500:  
                 cursor_x = 50 + prompt_surface.get_width() + input_surface.get_width()
                 cursor_rect = pygame.Rect(cursor_x, input_y, 12, 24) 
-                pygame.draw.rect(screen, self.text_color, cursor_rect)
+                pygame.draw.rect(screen, self.text_colour, cursor_rect)
         
         if self.error_message:
             error_y = WINDOW_HEIGHT - 100
@@ -135,5 +135,5 @@ class LoadingScreen:
             
         if self.waiting_for_input:
             instruction = "TYPE GAME NAME AND PRESS ENTER"
-            instruction_surface = self.small_font.render(instruction, True, self.text_color)
+            instruction_surface = self.small_font.render(instruction, True, self.text_colour)
             screen.blit(instruction_surface, (50, WINDOW_HEIGHT - 50))
