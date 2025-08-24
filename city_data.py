@@ -1,5 +1,3 @@
-"""City data for the WarGames simulation."""
-
 USA_CITIES = [
     {"name": "New York", "x": 360, "y": 203, "population": 8400000},
     {"name": "Houston", "x": 255, "y": 265, "population": 3900000},

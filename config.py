@@ -31,9 +31,9 @@ COLOURS = {
 }
 
 SELECTED_COLOUR = COLOURS["orange"]
-TARGETED_COLOR = COLOURS["red"]
-DEFENDED_COLOR = COLOURS["orange"]
-HIT_COLOR = COLOURS["purple"]
+TARGETED_COLOUR = COLOURS["red"]
+DEFENDED_COLOUR = COLOURS["orange"]
+HIT_COLOUR = COLOURS["purple"]
 
 class GameState(Enum):
     LOADING = 0

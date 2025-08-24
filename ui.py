@@ -1,5 +1,3 @@
-"""UI components for WarGames simulation."""
-
 import pygame
 import math
 from typing import Set, List
@@ -9,7 +7,6 @@ from city_data import USA_CITIES, USSR_CITIES
 
 
 class Button:
-    """A simple button class for UI elements - styled like original WarGames."""
     
     def __init__(self, x: int, y: int, width: int, height: int, text: str, 
                  color: tuple = COLOURS["green"], text_color: tuple = COLOURS["green"]):
@@ -21,41 +18,32 @@ class Button:
         self.enabled = True
     
     def draw(self, screen: pygame.Surface) -> None:
-        """Draw the button in original WarGames style."""
-        # Get mouse position for hover effect
         mouse = pygame.mouse.get_pos()
         hover = self.rect.collidepoint(mouse)
         
-        # Use green color like original
         color = COLOURS["green"] if self.enabled else (60, 60, 60)
         
-        # Draw outer border with rounded corners
         pygame.draw.rect(screen, color, self.rect, border_radius=6)
         
-        # Draw inner black rectangle
         inner_rect = self.rect.inflate(-6, -6)
         pygame.draw.rect(screen, COLOURS["black"], inner_rect, border_radius=6)
         
-        # Draw text
         text_color = COLOURS["green"] if self.enabled else (100, 100, 100)
         text_surface = self.font.render(self.text, True, text_color)
         text_rect = text_surface.get_rect(center=self.rect.center)
         screen.blit(text_surface, text_rect)
     
     def is_clicked(self, mouse_pos: tuple) -> bool:
-        """Check if the button was clicked."""
         return self.enabled and self.rect.collidepoint(mouse_pos)
 
 
 class CityRenderer:
-    """Handles rendering of cities and their states."""
     
     def __init__(self):
         self.font = pygame.font.Font(None, 18)
     
     def _get_city_color(self, is_destroyed: bool, is_defended: bool, 
                        is_selected: bool, is_targeted: bool, is_us_city: bool = True) -> tuple:
-        """Determine the color for a city based on its state."""
         if is_destroyed:
             return HIT_COLOR
         elif is_selected:
@@ -65,36 +53,30 @@ class CityRenderer:
         elif is_targeted:
             return TARGETED_COLOR
         else:
-            # Default city colors: blue for US, red for USSR
             return COLOURS["blue"] if is_us_city else COLOURS["red"]
     
     def draw_city(self, screen: pygame.Surface, city: dict, color: tuple, 
                   is_destroyed: bool = False, is_defended: bool = False, 
                   is_selected: bool = False, is_us_city: bool = True):
-        """Draw a single city using its state color for the dot."""
         x, y = city["x"], city["y"]
         size = CITY_RADIUS
         
         if is_destroyed:
-            # Black cross for destroyed cities (like original)
             pygame.draw.line(screen, COLOURS["black"], (x-size, y-size), (x+size, y+size), 3)
             pygame.draw.line(screen, COLOURS["black"], (x-size, y+size), (x+size, y-size), 3)
             text_color = HIT_COLOR
         else:
-            # The `color` parameter from _get_city_color determines the dot color
             pygame.draw.circle(screen, color, (x, y), size)
-            # Text color is always original (blue for US, red for USSR) unless destroyed
             text_color = COLOURS["blue"] if is_us_city else COLOURS["red"]
 
         text_surface = self.font.render(city["name"], True, text_color)
-        text_x = x + 12  # Position to the right like original
+        text_x = x + 12  
         text_y = y - text_surface.get_height() // 2
         screen.blit(text_surface, (text_x, text_y))
     
     def draw_usa_cities(self, screen: pygame.Surface, destroyed: List[bool], 
                        defenses: Set[int], targets: Set[int], 
                        selected_defenses: Set[int]):
-        """Draw all USA cities with their current states."""
         for idx, city in enumerate(USA_CITIES):
             is_defended = idx in defenses
             is_selected = idx in selected_defenses
@@ -107,7 +89,6 @@ class CityRenderer:
     
     def draw_ussr_cities(self, screen: pygame.Surface, destroyed: List[bool], 
                           defenses: Set[int], selected_targets: Set[int]):
-        """Draw all USSR cities with their current states."""
         for idx, city in enumerate(USSR_CITIES):
             is_defended = idx in defenses
             is_selected = idx in selected_targets
@@ -119,18 +100,15 @@ class CityRenderer:
 
 
 class UI:
-    """Main UI controller for the game."""
     
     def __init__(self):
         self.font = pygame.font.Font(None, 36)
         self.small_font = pygame.font.Font(None, 24)
         self.city_renderer = CityRenderer()
         
-        # Pre-render the title surface for better performance
         self.title_surface = self.font.render(GAME_TITLE, True, COLOURS["white"])
         self.title_rect = self.title_surface.get_rect(center=(WINDOW_WIDTH // 2, 17))
         
-        # Comprehensive help content
         self.help_content = [
             "GLOBAL THERMONUCLEAR WAR - HELP",
             "",
@@ -158,8 +136,7 @@ class UI:
             "",
             "Press H to close this help window"
         ]
-        
-        # Create buttons in original WarGames style and positions
+    
         self.begin_button = Button(
             WINDOW_WIDTH // 2 - 150, WINDOW_HEIGHT // 2 - 30, 300, 60, "BEGIN"
         )
@@ -180,14 +157,12 @@ class UI:
         )
     
     def draw_grid(self, screen: pygame.Surface) -> None:
-        """Draw development grid overlay."""
         grid_size = 50
         for x in range(0, WINDOW_WIDTH, grid_size):
             pygame.draw.line(screen, COLOURS["dark_gray"], (x, 0), (x, WINDOW_HEIGHT))
         for y in range(0, WINDOW_HEIGHT, grid_size):
             pygame.draw.line(screen, COLOURS["dark_gray"], (0, y), (WINDOW_WIDTH, y))
         
-        # Draw coordinates at intersections
         font = pygame.font.Font(None, 16)
         for x in range(0, WINDOW_WIDTH, grid_size * 2):
             for y in range(0, WINDOW_HEIGHT, grid_size * 2):
@@ -196,50 +171,43 @@ class UI:
                 screen.blit(text_surface, (x + 2, y + 2))
     
     def draw_windowed_text(self, screen: pygame.Surface, text_lines: List[str], y_position: int = None) -> None:
-        """Draw text in a windowed panel like the original game."""
         if not text_lines:
             return
         
-        # Calculate box dimensions
         max_width = 0
         line_height = 22
         for line in text_lines:
             surf = self.small_font.render(line, True, COLOURS["green"])
             max_width = max(max_width, surf.get_width())
         
-        box_width = max_width + 40  # padding
-        box_height = len(text_lines) * line_height + 40  # padding
+        box_width = max_width + 40  
+        box_height = len(text_lines) * line_height + 40 
         box_x = (WINDOW_WIDTH - box_width) // 2
         
-        # Position in lower half if y_position not specified
         if y_position is None:
             box_y = WINDOW_HEIGHT - box_height - 50
         else:
             box_y = y_position
         
-        # Draw bordered rectangle with black background (like original)
-        pygame.draw.rect(screen, COLOURS["green"], (box_x - 4, box_y - 4, box_width + 8, box_height + 8))  # border
-        pygame.draw.rect(screen, COLOURS["black"], (box_x, box_y, box_width, box_height))  # background
+        pygame.draw.rect(screen, COLOURS["green"], (box_x - 4, box_y - 4, box_width + 8, box_height + 8))  
+        pygame.draw.rect(screen, COLOURS["black"], (box_x, box_y, box_width, box_height)) 
         
-        # Draw text lines
+
         y = box_y + 20
         for line in text_lines:
             surf = self.small_font.render(line, True, COLOURS["green"])
-            x = box_x + (box_width - surf.get_width()) // 2  # center text
+            x = box_x + (box_width - surf.get_width()) // 2  
             screen.blit(surf, (x, y))
             y += line_height
 
     def draw_title(self, screen: pygame.Surface):
-        """Draw the game title at top of screen."""
         screen.blit(self.title_surface, self.title_rect)
     
     def draw_instruction(self, screen: pygame.Surface, instruction: str, y_pos: int = WINDOW_HEIGHT - 150):
-        """Draw instruction text in a windowed panel."""
         self.draw_windowed_text(screen, [instruction], y_pos)
     
     def draw_selection_counter(self, screen: pygame.Surface, current: int, 
                               maximum: int, label: str, y_pos: int = WINDOW_HEIGHT - 120):
-        """Draw selection counter in a windowed panel."""
         counter_text = f"{label}: {current}/{maximum}"
         self.draw_windowed_text(screen, [counter_text], y_pos)
     
@@ -247,8 +215,6 @@ class UI:
                     ussr_casualties: int, total_us: int, total_ussr: int,
                     us_percent: float, ussr_percent: float,
                     us_destroyed_cities: List[str], ussr_destroyed_cities: List[str]):
-        """Draw battle results in a windowed panel."""
-        # Create text lines for the results window
         text_lines = [
             "BATTLE RESULTS",
             "",
@@ -258,10 +224,8 @@ class UI:
         
         if us_destroyed_cities:
             text_lines.append("")
-            # Split US cities across multiple lines if needed
             us_cities_text = ", ".join(us_destroyed_cities)
             if len(us_cities_text) > 50:
-                # Split into multiple lines
                 cities_per_line = []
                 current_line = "US Cities Destroyed: "
                 
@@ -285,10 +249,8 @@ class UI:
         
         if ussr_destroyed_cities:
             text_lines.append("")
-            # Split USSR cities across multiple lines if needed
             ussr_cities_text = ", ".join(ussr_destroyed_cities)
             if len(ussr_cities_text) > 50:
-                # Split into multiple lines
                 cities_per_line = []
                 current_line = "USSR Cities Destroyed: "
                 
@@ -313,18 +275,15 @@ class UI:
         self.draw_windowed_text(screen, text_lines)
 
     def draw_help_prompt(self, screen: pygame.Surface):
-        """Draw simple help prompt at bottom of screen."""
         help_text = "Press H for Help"
         help_surface = pygame.font.Font(None, 20).render(help_text, True, COLOURS["green"])
         screen.blit(help_surface, (10, WINDOW_HEIGHT - 25))
     
     def draw_comprehensive_help(self, screen: pygame.Surface):
-        """Draw the comprehensive help window."""
         self.draw_windowed_text(screen, self.help_content, 30)
 
 
 def get_clicked_city(mouse_pos: tuple, cities: List[dict]) -> int:
-    """Return the index of the clicked city, or -1 if none."""
     for idx, city in enumerate(cities):
         distance = math.sqrt((mouse_pos[0] - city["x"])**2 + (mouse_pos[1] - city["y"])**2)
         if distance <= CITY_RADIUS:

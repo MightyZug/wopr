@@ -1,5 +1,3 @@
-"""Game state management for WarGames simulation."""
-
 import random
 from typing import Set, List, Dict, Any
 from config import GameState, DEFENSE_LIMIT, TARGET_LIMIT
@@ -7,8 +5,6 @@ from city_data import USA_CITIES, USSR_CITIES
 
 
 class GameStateManager:
-    """Manages the current state of the game and all game data."""
-    
     def __init__(self):
         self.current_state = GameState.LOADING
         self.player_defenses: Set[int] = set()
@@ -26,11 +22,10 @@ class GameStateManager:
         self.show_help = False
     
     def start_new_game(self) -> None:
-        """Initialize a new game session."""
         self.player_defenses = set()
         self.player_targets = set()
-        self.ai_defenses = set()  # AI selections happen only at launch
-        self.ai_targets = set()   # AI selections happen only at launch
+        self.ai_defenses = set()
+        self.ai_targets = set()
         self.usa_destroyed = [False] * len(USA_CITIES)
         self.ussr_destroyed = [False] * len(USSR_CITIES)
         self.us_cities_destroyed = []
@@ -40,7 +35,6 @@ class GameStateManager:
         self.current_state = GameState.DEFENSIVE
     
     def reset_to_menu(self) -> None:
-        """Reset everything and return to menu state."""
         self.player_defenses = set()
         self.player_targets = set()
         self.ai_defenses = set()
@@ -54,7 +48,6 @@ class GameStateManager:
         self.current_state = GameState.MENU
     
     def toggle_defense(self, city_index: int) -> bool:
-        """Toggle defense selection for a US city. Returns True if successful."""
         if city_index in self.player_defenses:
             self.player_defenses.remove(city_index)
             return True
@@ -64,7 +57,6 @@ class GameStateManager:
         return False
     
     def toggle_target(self, city_index: int) -> bool:
-        """Toggle target selection for a USSR city. Returns True if successful."""
         if city_index in self.player_targets:
             self.player_targets.remove(city_index)
             return True
@@ -74,29 +66,23 @@ class GameStateManager:
         return False
     
     def can_continue_to_offensive(self) -> bool:
-        """Check if player can continue to offensive phase."""
         return len(self.player_defenses) == DEFENSE_LIMIT
     
     def can_launch_missiles(self) -> bool:
-        """Check if player can launch missiles."""
         return (len(self.player_defenses) == DEFENSE_LIMIT and 
                 len(self.player_targets) == TARGET_LIMIT)
     
     def make_ai_selections(self) -> None:
-        """Make AI selections for defense and attack when launching missiles."""
         self.ai_defenses = set(random.sample(range(len(USSR_CITIES)), DEFENSE_LIMIT))
         self.ai_targets = set(random.sample(range(len(USA_CITIES)), TARGET_LIMIT))
     
     def toggle_grid(self) -> None:
-        """Toggle grid display for development."""
         self.show_grid = not self.show_grid
     
     def toggle_help(self) -> None:
-        """Toggle help display."""
         self.show_help = not self.show_help
     
     def calculate_casualties(self) -> tuple[int, int, int, int, float, float]:
-        """Calculate casualties for both sides."""
         us_casualties = sum(USA_CITIES[idx]["population"] 
                            for idx in range(len(USA_CITIES)) 
                            if self.usa_destroyed[idx])
