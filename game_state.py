@@ -25,7 +25,7 @@ class GameStateManager:
         self.show_grid = False
         self.show_help = False
     
-    def start_new_game(self):
+    def start_new_game(self) -> None:
         """Initialize a new game session."""
         self.player_defenses = set()
         self.player_targets = set()
@@ -39,7 +39,7 @@ class GameStateManager:
         self.mushroom_clouds = []
         self.current_state = GameState.DEFENSIVE
     
-    def reset_to_menu(self):
+    def reset_to_menu(self) -> None:
         """Reset everything and return to menu state."""
         self.player_defenses = set()
         self.player_targets = set()
@@ -52,10 +52,6 @@ class GameStateManager:
         self.missile_lines = []
         self.mushroom_clouds = []
         self.current_state = GameState.MENU
-    
-    def reset_game(self):
-        """Reset to menu state."""
-        self.reset_to_menu()
     
     def toggle_defense(self, city_index: int) -> bool:
         """Toggle defense selection for a US city. Returns True if successful."""
@@ -86,20 +82,20 @@ class GameStateManager:
         return (len(self.player_defenses) == DEFENSE_LIMIT and 
                 len(self.player_targets) == TARGET_LIMIT)
     
-    def make_ai_selections(self):
+    def make_ai_selections(self) -> None:
         """Make AI selections for defense and attack when launching missiles."""
         self.ai_defenses = set(random.sample(range(len(USSR_CITIES)), DEFENSE_LIMIT))
         self.ai_targets = set(random.sample(range(len(USA_CITIES)), TARGET_LIMIT))
     
-    def toggle_grid(self):
+    def toggle_grid(self) -> None:
         """Toggle grid display for development."""
         self.show_grid = not self.show_grid
     
-    def toggle_help(self):
+    def toggle_help(self) -> None:
         """Toggle help display."""
         self.show_help = not self.show_help
     
-    def calculate_casualties(self) -> tuple:
+    def calculate_casualties(self) -> tuple[int, int, int, int, float, float]:
         """Calculate casualties for both sides."""
         us_casualties = sum(USA_CITIES[idx]["population"] 
                            for idx in range(len(USA_CITIES)) 

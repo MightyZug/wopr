@@ -1,6 +1,3 @@
-
-"""Game configuration and constants."""
-
 from enum import Enum
 
 # Display settings
@@ -11,16 +8,15 @@ FPS = 60
 # Game settings
 GAME_TITLE = "Global Thermonuclear War"
 CITY_RADIUS = 8
-MISSILE_SPEED = 0.001  # Faster speed to match original (was 0.003)
-INTERCEPT_RADIUS = 60  # Radius for missile intercepts
+MISSILE_SPEED = 0.001  
+INTERCEPT_RADIUS = 60  
 DEFENSE_LIMIT = 5
 TARGET_LIMIT = 5
 SHADOW_OFFSET = 3
 EXPLOSION_RADIUS = 30
-MUSHROOM_CLOUD_DURATION = 3000  # 3 seconds
+MUSHROOM_CLOUD_DURATION = 3000  
 
-# Colors
-COLORS = {
+COLOURS = {
     "black": (0, 0, 0),
     "white": (255, 255, 255),
     "red": (255, 0, 0),
@@ -34,10 +30,10 @@ COLORS = {
     "purple": (128, 0, 128)
 }
 
-SELECTED_COLOR = COLORS["orange"]
-TARGETED_COLOR = COLORS["red"]
-DEFENDED_COLOR = COLORS["orange"]
-HIT_COLOR = COLORS["purple"]
+SELECTED_COLOUR = COLOURS["orange"]
+TARGETED_COLOR = COLOURS["red"]
+DEFENDED_COLOR = COLOURS["orange"]
+HIT_COLOR = COLOURS["purple"]
 
 class GameState(Enum):
     LOADING = 0

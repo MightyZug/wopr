@@ -3,8 +3,8 @@
 import pygame
 import math
 from typing import Set, List
-from config import (COLORS, WINDOW_WIDTH, WINDOW_HEIGHT, CITY_RADIUS, 
-                   SELECTED_COLOR, TARGETED_COLOR, DEFENDED_COLOR, HIT_COLOR, GAME_TITLE)
+from config import (COLOURS, WINDOW_WIDTH, WINDOW_HEIGHT, CITY_RADIUS, 
+                   SELECTED_COLOUR, TARGETED_COLOR, DEFENDED_COLOR, HIT_COLOR, GAME_TITLE)
 from city_data import USA_CITIES, USSR_CITIES
 
 
@@ -12,7 +12,7 @@ class Button:
     """A simple button class for UI elements - styled like original WarGames."""
     
     def __init__(self, x: int, y: int, width: int, height: int, text: str, 
-                 color: tuple = COLORS["green"], text_color: tuple = COLORS["green"]):
+                 color: tuple = COLOURS["green"], text_color: tuple = COLOURS["green"]):
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         self.color = color
@@ -20,24 +20,24 @@ class Button:
         self.font = pygame.font.Font(None, 24)
         self.enabled = True
     
-    def draw(self, screen: pygame.Surface):
+    def draw(self, screen: pygame.Surface) -> None:
         """Draw the button in original WarGames style."""
         # Get mouse position for hover effect
         mouse = pygame.mouse.get_pos()
         hover = self.rect.collidepoint(mouse)
         
         # Use green color like original
-        color = COLORS["green"] if self.enabled else (60, 60, 60)
+        color = COLOURS["green"] if self.enabled else (60, 60, 60)
         
         # Draw outer border with rounded corners
         pygame.draw.rect(screen, color, self.rect, border_radius=6)
         
         # Draw inner black rectangle
         inner_rect = self.rect.inflate(-6, -6)
-        pygame.draw.rect(screen, COLORS["black"], inner_rect, border_radius=6)
+        pygame.draw.rect(screen, COLOURS["black"], inner_rect, border_radius=6)
         
         # Draw text
-        text_color = COLORS["green"] if self.enabled else (100, 100, 100)
+        text_color = COLOURS["green"] if self.enabled else (100, 100, 100)
         text_surface = self.font.render(self.text, True, text_color)
         text_rect = text_surface.get_rect(center=self.rect.center)
         screen.blit(text_surface, text_rect)
@@ -59,14 +59,14 @@ class CityRenderer:
         if is_destroyed:
             return HIT_COLOR
         elif is_selected:
-            return SELECTED_COLOR
+            return SELECTED_COLOUR
         elif is_defended:
             return DEFENDED_COLOR
         elif is_targeted:
             return TARGETED_COLOR
         else:
             # Default city colors: blue for US, red for USSR
-            return COLORS["blue"] if is_us_city else COLORS["red"]
+            return COLOURS["blue"] if is_us_city else COLOURS["red"]
     
     def draw_city(self, screen: pygame.Surface, city: dict, color: tuple, 
                   is_destroyed: bool = False, is_defended: bool = False, 
@@ -77,14 +77,14 @@ class CityRenderer:
         
         if is_destroyed:
             # Black cross for destroyed cities (like original)
-            pygame.draw.line(screen, COLORS["black"], (x-size, y-size), (x+size, y+size), 3)
-            pygame.draw.line(screen, COLORS["black"], (x-size, y+size), (x+size, y-size), 3)
+            pygame.draw.line(screen, COLOURS["black"], (x-size, y-size), (x+size, y+size), 3)
+            pygame.draw.line(screen, COLOURS["black"], (x-size, y+size), (x+size, y-size), 3)
             text_color = HIT_COLOR
         else:
             # The `color` parameter from _get_city_color determines the dot color
             pygame.draw.circle(screen, color, (x, y), size)
             # Text color is always original (blue for US, red for USSR) unless destroyed
-            text_color = COLORS["blue"] if is_us_city else COLORS["red"]
+            text_color = COLOURS["blue"] if is_us_city else COLOURS["red"]
 
         text_surface = self.font.render(city["name"], True, text_color)
         text_x = x + 12  # Position to the right like original
@@ -127,7 +127,7 @@ class UI:
         self.city_renderer = CityRenderer()
         
         # Pre-render the title surface for better performance
-        self.title_surface = self.font.render(GAME_TITLE, True, COLORS["white"])
+        self.title_surface = self.font.render(GAME_TITLE, True, COLOURS["white"])
         self.title_rect = self.title_surface.get_rect(center=(WINDOW_WIDTH // 2, 17))
         
         # Comprehensive help content
@@ -176,26 +176,26 @@ class UI:
             WINDOW_WIDTH - 200, WINDOW_HEIGHT - 80, 180, 50, "RESET"
         )
         self.reset_button = Button(
-            WINDOW_WIDTH - 200, WINDOW_HEIGHT - 140, 180, 50, "RESET", COLORS["green"], COLORS["green"]
+            WINDOW_WIDTH - 200, WINDOW_HEIGHT - 140, 180, 50, "RESET", COLOURS["green"], COLOURS["green"]
         )
     
-    def draw_grid(self, screen: pygame.Surface):
+    def draw_grid(self, screen: pygame.Surface) -> None:
         """Draw development grid overlay."""
         grid_size = 50
         for x in range(0, WINDOW_WIDTH, grid_size):
-            pygame.draw.line(screen, COLORS["dark_gray"], (x, 0), (x, WINDOW_HEIGHT))
+            pygame.draw.line(screen, COLOURS["dark_gray"], (x, 0), (x, WINDOW_HEIGHT))
         for y in range(0, WINDOW_HEIGHT, grid_size):
-            pygame.draw.line(screen, COLORS["dark_gray"], (0, y), (WINDOW_WIDTH, y))
+            pygame.draw.line(screen, COLOURS["dark_gray"], (0, y), (WINDOW_WIDTH, y))
         
         # Draw coordinates at intersections
         font = pygame.font.Font(None, 16)
         for x in range(0, WINDOW_WIDTH, grid_size * 2):
             for y in range(0, WINDOW_HEIGHT, grid_size * 2):
                 coord_text = f"({x},{y})"
-                text_surface = font.render(coord_text, True, COLORS["gray"])
+                text_surface = font.render(coord_text, True, COLOURS["gray"])
                 screen.blit(text_surface, (x + 2, y + 2))
     
-    def draw_windowed_text(self, screen: pygame.Surface, text_lines: List[str], y_position: int = None):
+    def draw_windowed_text(self, screen: pygame.Surface, text_lines: List[str], y_position: int = None) -> None:
         """Draw text in a windowed panel like the original game."""
         if not text_lines:
             return
@@ -204,7 +204,7 @@ class UI:
         max_width = 0
         line_height = 22
         for line in text_lines:
-            surf = self.small_font.render(line, True, COLORS["green"])
+            surf = self.small_font.render(line, True, COLOURS["green"])
             max_width = max(max_width, surf.get_width())
         
         box_width = max_width + 40  # padding
@@ -218,13 +218,13 @@ class UI:
             box_y = y_position
         
         # Draw bordered rectangle with black background (like original)
-        pygame.draw.rect(screen, COLORS["green"], (box_x - 4, box_y - 4, box_width + 8, box_height + 8))  # border
-        pygame.draw.rect(screen, COLORS["black"], (box_x, box_y, box_width, box_height))  # background
+        pygame.draw.rect(screen, COLOURS["green"], (box_x - 4, box_y - 4, box_width + 8, box_height + 8))  # border
+        pygame.draw.rect(screen, COLOURS["black"], (box_x, box_y, box_width, box_height))  # background
         
         # Draw text lines
         y = box_y + 20
         for line in text_lines:
-            surf = self.small_font.render(line, True, COLORS["green"])
+            surf = self.small_font.render(line, True, COLOURS["green"])
             x = box_x + (box_width - surf.get_width()) // 2  # center text
             screen.blit(surf, (x, y))
             y += line_height
@@ -315,7 +315,7 @@ class UI:
     def draw_help_prompt(self, screen: pygame.Surface):
         """Draw simple help prompt at bottom of screen."""
         help_text = "Press H for Help"
-        help_surface = pygame.font.Font(None, 20).render(help_text, True, COLORS["green"])
+        help_surface = pygame.font.Font(None, 20).render(help_text, True, COLOURS["green"])
         screen.blit(help_surface, (10, WINDOW_HEIGHT - 25))
     
     def draw_comprehensive_help(self, screen: pygame.Surface):

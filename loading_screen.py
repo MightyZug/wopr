@@ -1,9 +1,8 @@
 """WOPR Loading Screen for WarGames simulation."""
 
 import pygame
-import time
 from typing import List, Optional
-from config import COLORS, WINDOW_WIDTH, WINDOW_HEIGHT
+from config import COLOURS, WINDOW_WIDTH, WINDOW_HEIGHT
 
 
 class LoadingScreen:
@@ -48,7 +47,7 @@ class LoadingScreen:
         self.showing_games = True
         self.waiting_for_input = False
         
-    def update(self, dt: float) -> Optional[str]:
+    def update(self) -> Optional[str]:
         """Update the loading screen animation. Returns 'start_game' when ready."""
         current_time = pygame.time.get_ticks()
         

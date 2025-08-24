@@ -1,10 +1,8 @@
 """Missile system for WarGames simulation."""
 
 import pygame
-import math
-import random
 from typing import List, Dict, Set, Any
-from config import (COLORS, MissileType, MISSILE_SPEED, INTERCEPT_RADIUS, 
+from config import (COLOURS, INTERCEPT_RADIUS, 
                    MUSHROOM_CLOUD_DURATION, EXPLOSION_RADIUS)
 from city_data import USA_CITIES, USSR_CITIES
 
@@ -18,7 +16,7 @@ class MissileSystem:
         self.animation_start_time = 0
     
     def create_missile_lines(self, player_targets: Set[int], ai_targets: Set[int], 
-                            player_defenses: Set[int], ai_defenses: Set[int]):
+                            player_defenses: Set[int], ai_defenses: Set[int]) -> None:
         """Create missile trajectory lines for animation - missiles launch from defended cities."""
         self.missile_lines = []
         self.animation_start_time = pygame.time.get_ticks()
@@ -69,7 +67,7 @@ class MissileSystem:
                     "intercepted": False
                 })
     
-    def update_missiles(self, dt: float) -> bool:
+    def update_missiles(self) -> bool:
         """Update missile animations exactly like the original archive version."""
         current_time = pygame.time.get_ticks()
         animation_duration = 3000  # 3 seconds
@@ -140,10 +138,6 @@ class MissileSystem:
             for missile in self.missile_lines:
                 missile["progress"] = 1.0
             return True
-    
-    def check_and_launch_intercepts(self, player_defenses: Set[int], ai_defenses: Set[int]):
-        """This method is now handled inside update_missiles - kept for compatibility."""
-        pass
     
     def check_intercepts(self, player_defenses: Set[int], ai_defenses: Set[int]) -> Set[int]:
         """Check for missile intercepts and handle impacts like the original."""
@@ -223,7 +217,7 @@ class MissileSystem:
                             "duration": MUSHROOM_CLOUD_DURATION
                         })
     
-    def update_mushroom_clouds(self):
+    def update_mushroom_clouds(self) -> None:
         """Update and clean up mushroom cloud animations."""
         current_time = pygame.time.get_ticks()
         self.mushroom_clouds = [
@@ -231,7 +225,7 @@ class MissileSystem:
             if current_time - cloud["start_time"] < MUSHROOM_CLOUD_DURATION
         ]
     
-    def draw_missiles(self, screen: pygame.Surface):
+    def draw_missiles(self, screen: pygame.Surface) -> None:
         """Draw all active missiles like the original."""
         for missile in self.missile_lines:
             # Skip drawing intercepted missiles after they're hit
@@ -251,7 +245,7 @@ class MissileSystem:
                 # Draw missile head
                 pygame.draw.circle(screen, missile["color"], (int(current_x), int(current_y)), 3)
     
-    def draw_mushroom_clouds(self, screen: pygame.Surface):
+    def draw_mushroom_clouds(self, screen: pygame.Surface) -> None:
         """Draw mushroom cloud explosions like the original."""
         current_time = pygame.time.get_ticks()
         
@@ -273,25 +267,25 @@ class MissileSystem:
                 explosion_surface = explosion_surface.convert_alpha()
                 
                 # Draw explosion layers
-                pygame.draw.circle(explosion_surface, COLORS["red"], 
+                pygame.draw.circle(explosion_surface, COLOURS["red"], 
                                  (int(current_radius), int(current_radius)), int(current_radius))
-                pygame.draw.circle(explosion_surface, COLORS["yellow"], 
+                pygame.draw.circle(explosion_surface, COLOURS["yellow"], 
                                  (int(current_radius), int(current_radius)), int(current_radius * 0.7))
-                pygame.draw.circle(explosion_surface, COLORS["white"], 
+                pygame.draw.circle(explosion_surface, COLOURS["white"], 
                                  (int(current_radius), int(current_radius)), int(current_radius * 0.4))
                 
                 # Blit to main screen
                 screen.blit(explosion_surface, 
                            (pos_x - current_radius, pos_y - current_radius))
     
-    def draw_defense_ranges(self, screen: pygame.Surface, defenses: Set[int], cities: List[dict]):
+    def draw_defense_ranges(self, screen: pygame.Surface, defenses: Set[int], cities: List[dict]) -> None:
         """Draw defense intercept ranges."""
         for defense_idx in defenses:
             city = cities[defense_idx]
-            pygame.draw.circle(screen, COLORS["green"], 
+            pygame.draw.circle(screen, COLOURS["green"], 
                              (city["x"], city["y"]), INTERCEPT_RADIUS, 1)
     
-    def reset(self):
+    def reset(self) -> None:
         """Reset missile system for new game."""
         self.missile_lines = []
         self.mushroom_clouds = []
